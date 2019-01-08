@@ -5,7 +5,6 @@ using Neutronium.WPF;
 using Neutronium.BuildingBlocks.SetUp;
 using System.Diagnostics;
 using System.Windows;
-using Neutronium.BuildingBlocks.SetUp.NpmHelper;
 
 namespace Neutronium_Simple_Application {
     /// <summary>
@@ -29,9 +28,7 @@ namespace Neutronium_Simple_Application {
 
         protected override void OnStartUp(IHTMLEngineFactory factory) {
 #if DEBUG
-            _ApplicationSetUpBuilder.OnRunnerMessageReceived += OnRunnerMessageReceived;
-            SetUpViewModel.InitFromArgs(Args).Wait();
-            Trace.WriteLine($"Starting with set-up: {SetUpViewModel}");
+            SetUpForDeveloppment();
 #else
             SetUpViewModel.InitForProduction();
 #endif
@@ -39,7 +36,19 @@ namespace Neutronium_Simple_Application {
             base.OnStartUp(factory);
         }
 
-        private void OnRunnerMessageReceived(object sender, RunnerMessageEventArgs e) {
+        private void SetUpForDeveloppment()
+        {
+            _ApplicationSetUpBuilder.OnRunnerMessageReceived += OnRunnerMessageReceived;
+            _ApplicationSetUpBuilder.OnArgumentParsingError += OnArgumentParsingError;
+            SetUpViewModel.InitFromArgs(Args).Wait();
+            Trace.WriteLine($"Starting with set-up: {SetUpViewModel}");
+        }
+
+        private void OnArgumentParsingError(object sender, MessageEventArgs e) {
+            Trace.WriteLine($"Error parsing arguments, unexpected item: {e.Message}");
+        }
+
+        private void OnRunnerMessageReceived(object sender, MessageEventArgs e) {
             Trace.WriteLine($"Npm runner log: {e.Message}");
         }
 
