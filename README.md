@@ -14,7 +14,7 @@ This project is a template application for Neutronium Vue project.<br>
 
 * `npm run serve`
 
-    Serve files for Neutronium hot-reload.
+    Serve files for Neutronium for debug in local browser using `.cjson` files as view-model.
 
 * `npm run live`
 
